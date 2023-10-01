@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bingo Game</title>
+</head>
+
+<body>
+  <div id="bingo-board"></div>
+
+  <script src="sollution.js">
+    // This is the POST request code
+    const postData = {
+      answer: "13754",
+      name: "Karin Lundqvist"
+    };
+
+    // Fetch the API data and update the bingo board
+    fetch("https://customer-api.krea.se/coding-tests/api/squid-game", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(postData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); // Log the API response data
+      updateBingoBoard(data); // Call the function to update the bingo board with the API response data
+    })
+    .catch(error => console.error(error));
+
+    // Function to update the bingo board with the API response data
+    function updateBingoBoard(data) {
+      const bingoBoard = document.getElementById("bingo-board");
+
+      // Ensure data format is as expected
+      if (data && Array.isArray(data.board) && data.board.length === 5) {
+        const rows = data.board.map(row => {
+          return "<div>" + row.join("</div><div>") + "</div>"; // Wrap each number in a <div> element
+        });
+        bingoBoard.innerHTML = rows.join(""); // Set the inner HTML of the bingo board
+      } else {
+        bingoBoard.innerHTML = "<div>Error: Invalid data format</div>"; // Display an error message if the data format is incorrect
+      }
+    }
+  </script>
+</body>
+
+</html>
